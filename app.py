@@ -46,7 +46,7 @@ col1, col2 = st.columns(2)
 
 with col1:
     nombre = st.text_input("Nombre", placeholder="Ej. Alba")
-    apellidos = st.text_input("Apellidos", placeholder="Ej. Rodríguez Fernández")
+    apellidos = st.text_input("Apellidos", placeholder="Ej. Fernández")
     email = st.text_input("Email", placeholder="Ej. nombre@email.com")
 
 with col2:
