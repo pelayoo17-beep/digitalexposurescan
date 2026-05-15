@@ -1,5 +1,5 @@
 import streamlit as st
-from ddgs import DDGS
+from duckduckgo_search import DDGS
 
 st.set_page_config(
     page_title="Escáner de Huella Digital",
