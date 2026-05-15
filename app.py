@@ -9,43 +9,50 @@ st.write("Beta de análisis de exposición pública en internet.")
 nombre = st.text_input("Nombre")
 apellidos = st.text_input("Apellidos")
 email = st.text_input("Email")
-telefono = st.text_input("Teléfono")
 linkedin = st.text_input("LinkedIn")
 instagram = st.text_input("Instagram")
+
+def buscar(query):
+   resultados_limpios = []
+   try:
+       with DDGS() as ddgs:
+           resultados = ddgs.text(query, max_results=5)
+           for r in resultados:
+               resultados_limpios.append({
+                   "Título": r.get("title", ""),
+                   "URL": r.get("href", ""),
+                   "Descripción": r.get("body", "")
+               })
+   except Exception as e:
+       resultados_limpios.append({
+           "Título": "Error",
+           "URL": "",
+           "Descripción": str(e)
+       })
+   return resultados_limpios
+
 if st.button("Ejecutar análisis"):
    nombre_completo = f"{nombre} {apellidos}".strip()
-   queries = []
-   if nombre_completo:
-       queries.append(f'"{nombre_completo}"')
-       queries.append(f'"{nombre_completo}" pdf')
-       queries.append(f'"{nombre_completo}" linkedin')
-       queries.append(f'"{nombre_completo}" instagram')
-   if email:
-       queries.append(f'"{email}"')
-   if telefono:
-       queries.append(f'"{telefono}"')
-   if linkedin:
-       queries.append(f'"{linkedin}"')
-   if instagram:
-       queries.append(f'"{instagram}"')
-   if not queries:
-       st.error("Introduce al menos un dato para buscar.")
+   if not nombre_completo and not email and not linkedin and not instagram:
+       st.error("Introduce al menos un dato para analizar.")
    else:
-       st.success("Análisis iniciado correctamente.")
+       queries = []
+       if nombre_completo:
+           queries.append(f'"{nombre_completo}"')
+           queries.append(f'"{nombre_completo}" pdf')
+           queries.append(f'"{nombre_completo}" CV OR curriculum')
+       if email:
+           queries.append(f'"{email}"')
+       if linkedin:
+           queries.append(f'"{linkedin}"')
+       if instagram:
+           queries.append(f'"{instagram}"')
        for query in queries:
-           st.subheader(f"Búsqueda: {query}")
-           try:
-               with DDGS() as ddgs:
-                   resultados = list(ddgs.text(query, max_results=3))
-               if not resultados:
-st.info("Sin resultados.")
-               for resultado in resultados:
-                   titulo = resultado.get("title", "")
-                   url = resultado.get("href", "")
-                   descripcion = resultado.get("body", "")
-                   st.markdown(f"**{titulo}**")
-                   st.write(descripcion)
-                   st.write(url)
-                   st.markdown("---")
-           except Exception as error:
-               st.error(f"Error en la búsqueda: {error}")
+st.info(f"Buscando: {query}")
+           resultados = buscar(query)
+           st.success(f"Resultados encontrados: {len(resultados)}")
+           for resultado in resultados:
+               st.subheader(resultado["Título"])
+               st.write(resultado["Descripción"])
+               st.write(resultado["URL"])
+               st.markdown("---")
