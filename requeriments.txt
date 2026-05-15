@@ -1,2 +1,2 @@
 streamlit
-ddgs
+duckduckgo-search
