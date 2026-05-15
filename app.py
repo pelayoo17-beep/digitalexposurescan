@@ -69,7 +69,7 @@ with col1:
 
     apellidos = st.text_input(
         "Apellidos",
-        placeholder="Ej. Rodríguez Fernández"
+        placeholder="Ej. Fernández"
     )
 
     email = st.text_input(
